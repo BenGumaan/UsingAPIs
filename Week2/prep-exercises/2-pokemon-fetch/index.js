@@ -21,6 +21,19 @@ async function fetchJSON(url) {
   // Fetch the JSON data from the web API that responds to the `url` parameter
   // and return a promise that resolves to a corresponding JavaScript object.
   // Make sure to check for HTTP errors.
+
+    try {
+      const fetchedData = await fetch(url);
+
+      if (!fetchedData.ok) { // Here we check for HTTP errors.
+        throw new Error(fetchedData.status);  
+      } else {
+        const parsedData = await fetchedData.json();
+        return parsedData;
+      }
+    } catch (err) {
+      throw new Error(`Oops, something went wrong! The URL was not found (${err.message})`);
+    }
 }
 
 function renderResults(pokemons) {
@@ -56,6 +69,8 @@ function main() {
     // Use `fetchJSON()` to fetch data from the selected url.
     // If successful, render the data by calling function `renderResults()`.
     // On failure, render the error by calling function `renderError()`.
+
+    fetchJSON(url).then(data => renderResults(data)).catch(err => renderError(err));
   });
 }
 
